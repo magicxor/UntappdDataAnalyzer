@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c3c3e381-f740-47c8-ae01-79e2ad720302</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>UntappdDataAnalyzer.Core</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\LinqStatistics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Checkin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DataItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\DataAnalyzer.cs" />
+  </ItemGroup>
+</Project>

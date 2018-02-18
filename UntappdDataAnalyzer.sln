@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UntappdDataAnalyzer.Bridge", "UntappdDataAnalyzer.Bridge\UntappdDataAnalyzer.Bridge.csproj", "{796ECC56-84B7-49F5-B51F-382E62295CE6}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UntappdDataAnalyzer.Core", "UntappdDataAnalyzer.Core\UntappdDataAnalyzer.Core.shproj", "{C3C3E381-F740-47C8-AE01-79E2AD720302}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		UntappdDataAnalyzer.Core\UntappdDataAnalyzer.Core.projitems*{796ecc56-84b7-49f5-b51f-382e62295ce6}*SharedItemsImports = 4
+		UntappdDataAnalyzer.Core\UntappdDataAnalyzer.Core.projitems*{c3c3e381-f740-47c8-ae01-79e2ad720302}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{796ECC56-84B7-49F5-B51F-382E62295CE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796ECC56-84B7-49F5-B51F-382E62295CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796ECC56-84B7-49F5-B51F-382E62295CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796ECC56-84B7-49F5-B51F-382E62295CE6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A69236CD-0EAE-41A0-B43A-01589A3BC30A}
+	EndGlobalSection
+EndGlobal
