@@ -49,8 +49,7 @@ function renderAsPieChart(chartName, data) {
 function renderRatingAndCountColumnChart(chartName1, chartName2, data1, data2) {
     Highcharts.chart(chartName1, {
         chart: {
-            type: 'column',
-            alignTicks: false
+            type: 'column'
         },
         title: {
             text: chartName1 + " and " + chartName2
@@ -61,12 +60,15 @@ function renderRatingAndCountColumnChart(chartName1, chartName2, data1, data2) {
         yAxis: [{ // Primary yAxis
             title: {
                 text: 'Rating'
-            }
+            },
+            max: 5,
+            showLastLabel: false
         }, { // Secondary yAxis
             title: {
                 text: 'Count'
             },
-            opposite: true
+            opposite: true,
+            visible: false
         }],
         plotOptions: {
             column: {
