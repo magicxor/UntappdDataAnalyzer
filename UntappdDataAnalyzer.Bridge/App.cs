@@ -114,10 +114,10 @@ namespace UntappdDataAnalyzer.Bridge
 
                             var dataAnalyzer = new DataAnalyzer();
 
-                            var statsByCountry = dataAnalyzer.GetStatisticsForNullableDoubleValues(data, checkin => checkin.BreweryCountry, checkin => checkin.RatingScore);
-                            var statsByBrewery = dataAnalyzer.GetStatisticsForNullableDoubleValues(data, checkin => checkin.BreweryName, checkin => checkin.RatingScore);
-                            var statsByStyle = dataAnalyzer.GetStatisticsForNullableDoubleValues(data, checkin => checkin.BeerType, checkin => checkin.RatingScore);
-
+                            var statsByCountry = dataAnalyzer.GetStatistics(data, checkin => checkin.BreweryCountry, checkin => checkin.RatingScore);
+                            var statsByBrewery = dataAnalyzer.GetStatistics(data, checkin => checkin.BreweryName, checkin => checkin.RatingScore);
+                            var statsByStyle = dataAnalyzer.GetStatistics(data, checkin => checkin.BeerType, checkin => checkin.RatingScore);
+                            
                             var medianRatingByCountry = statsByCountry.OrderByDescending(item => item.Median).Select(item => new { name = item.Key, y = item.Median }).ToList();
                             var countByCountry = statsByCountry.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
 

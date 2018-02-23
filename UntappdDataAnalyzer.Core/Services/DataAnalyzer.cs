@@ -8,7 +8,7 @@ namespace UntappdDataAnalyzer.Core.Services
 {
     public class DataAnalyzer
     {
-        public IList<DataItem<TKey, double?>> GetStatisticsForNullableDoubleValues<TModel, TKey>(
+        public IList<DataItem<TKey, double?>> GetStatistics<TModel, TKey>(
             IEnumerable<TModel> data,
             Func<TModel, TKey> keySelector,
             Func<TModel, double?> valueSelector)
@@ -18,7 +18,7 @@ namespace UntappdDataAnalyzer.Core.Services
             return GetStatistics(data, keySelector, valueSelector, averageSelector, medianSelector);
         }
 
-        public IList<DataItem<TKey, int?>> GetStatisticsForNullableIntValues<TModel, TKey>(
+        public IList<DataItem<TKey, int?>> GetStatistics<TModel, TKey>(
             IEnumerable<TModel> data,
             Func<TModel, TKey> keySelector,
             Func<TModel, int?> valueSelector)
