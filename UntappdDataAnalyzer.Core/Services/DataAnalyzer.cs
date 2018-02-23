@@ -56,5 +56,15 @@ namespace UntappdDataAnalyzer.Core.Services
                 .ToList();
             return result;
         }
+
+        public double GetMedian(IEnumerable<double> values)
+        {
+            return values.Median();
+        }
+
+        public double GetMedian(IEnumerable<int> values)
+        {
+            return values.Median();
+        }
     }
 }

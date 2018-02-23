@@ -9,6 +9,7 @@
     <Import_RootNamespace>UntappdDataAnalyzer.Core</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CheckinExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\LinqStatistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Checkin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DataItem.cs" />

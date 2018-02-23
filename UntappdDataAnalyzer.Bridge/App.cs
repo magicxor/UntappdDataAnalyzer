@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using Bridge;
+using UntappdDataAnalyzer.Core.Extensions;
 using UntappdDataAnalyzer.Core.Models;
 using UntappdDataAnalyzer.Core.Services;
 
@@ -85,6 +86,11 @@ namespace UntappdDataAnalyzer.Bridge
             AddDivAsRow(divContainer, "countByBrewery");
             AddDivAsRow(divContainer, "medianRatingByStyle");
             AddDivAsRow(divContainer, "countByStyle");
+            AddDivAsRow(divContainer, "countByServingType");
+            AddDivAsRow(divContainer, "medianRatingByFlavorProfile");
+            AddDivAsRow(divContainer, "countByFlavorProfile");
+            divContainer.AppendChild(new HTMLHRElement());
+            AddDivAsRow(divContainer, "additionalStats");
 
             var row = new HTMLDivElement { ClassName = "row" };
             divContainer.AppendChild(row);
@@ -114,10 +120,31 @@ namespace UntappdDataAnalyzer.Bridge
 
                             var dataAnalyzer = new DataAnalyzer();
 
-                            var statsByCountry = dataAnalyzer.GetStatistics(data, checkin => checkin.BreweryCountry, checkin => checkin.RatingScore);
-                            var statsByBrewery = dataAnalyzer.GetStatistics(data, checkin => checkin.BreweryName, checkin => checkin.RatingScore);
-                            var statsByStyle = dataAnalyzer.GetStatistics(data, checkin => checkin.BeerType, checkin => checkin.RatingScore);
-                            
+                            var medianRating = dataAnalyzer.GetMedian(data.Where(c => c.RatingScore.HasValue).Select(c => c.RatingScore.Value));
+                            var medianAbv = dataAnalyzer.GetMedian(data.Where(c => c.BeerAbv.HasValue).Select(c => c.BeerAbv.Value));
+                            var medianIbu = dataAnalyzer.GetMedian(data.Where(c => c.BeerIbu.HasValue).Select(c => c.BeerIbu.Value));
+
+                            var dataByFlavorProfile = data.Aggregate(new List<Checkin>(), (checkins, checkin) =>
+                            {
+                                if (!string.IsNullOrWhiteSpace(checkin.FlavorProfiles))
+                                {
+                                    var flavorProfiles = checkin.FlavorProfiles.Split(',');
+                                    foreach (var flavorProfile in flavorProfiles)
+                                    {
+                                        var checkinCopy = checkin.DeepCopy();
+                                        checkinCopy.FlavorProfiles = flavorProfile;
+                                        checkins.Add(checkinCopy);
+                                    }
+                                }
+                                return checkins;
+                            });
+
+                            var statsByCountry = dataAnalyzer.GetStatistics(data.Where(d => !string.IsNullOrEmpty(d.BreweryCountry)), checkin => checkin.BreweryCountry, checkin => checkin.RatingScore);
+                            var statsByBrewery = dataAnalyzer.GetStatistics(data.Where(d => !string.IsNullOrEmpty(d.BreweryName)), checkin => checkin.BreweryName, checkin => checkin.RatingScore);
+                            var statsByStyle = dataAnalyzer.GetStatistics(data.Where(d => !string.IsNullOrEmpty(d.BeerType)), checkin => checkin.BeerType, checkin => checkin.RatingScore);
+                            var statsByServingType = dataAnalyzer.GetStatistics(data.Where(d => !string.IsNullOrEmpty(d.ServingType)), checkin => checkin.ServingType, checkin => checkin.RatingScore);
+                            var statsByFlavorProfile = dataAnalyzer.GetStatistics(dataByFlavorProfile, checkin => checkin.FlavorProfiles, checkin => checkin.RatingScore);
+
                             var medianRatingByCountry = statsByCountry.OrderByDescending(item => item.Median).Select(item => new { name = item.Key, y = item.Median }).ToList();
                             var countByCountry = statsByCountry.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
 
@@ -127,12 +154,26 @@ namespace UntappdDataAnalyzer.Bridge
                             var medianRatingByStyle = statsByStyle.OrderByDescending(item => item.Median).Select(item => new { name = item.Key, y = item.Median }).ToList();
                             var countByStyle = statsByStyle.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
 
+                            var countByServingType = statsByServingType.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
+
+                            var medianRatingByFlavorProfile = statsByFlavorProfile.OrderByDescending(item => item.Median).Select(item => new { name = item.Key, y = item.Median }).ToList();
+                            var countByFlavorProfile = statsByFlavorProfile.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
+
+                            Document.GetElementById("additionalStats").AppendChild(new HTMLParagraphElement()
+                            {
+                                ClassName = "text-center",
+                                InnerHTML = $"<b>{nameof(medianRating)}: {medianRating}, {nameof(medianAbv)}: {medianAbv}, {nameof(medianIbu)}: {medianIbu}</b>",
+                            });
+
                             Script.Call("renderRatingAndCountColumnChart", nameof(medianRatingByCountry), nameof(countByCountry), medianRatingByCountry.ToArray(), countByCountry.ToArray());
                             Script.Call("renderAsPieChart", nameof(countByCountry), countByCountry.ToArray());
                             Script.Call("renderRatingAndCountColumnChart", nameof(medianRatingByBrewery), nameof(countByBrewery), medianRatingByBrewery.ToArray(), countByBrewery.ToArray());
                             Script.Call("renderAsPieChart", nameof(countByBrewery), countByBrewery.ToArray());
                             Script.Call("renderRatingAndCountColumnChart", nameof(medianRatingByStyle), nameof(countByStyle), medianRatingByStyle.ToArray(), countByStyle.ToArray());
                             Script.Call("renderAsPieChart", nameof(countByStyle), countByStyle.ToArray());
+                            Script.Call("renderAsPieChart", nameof(countByServingType), countByServingType.ToArray());
+                            Script.Call("renderRatingAndCountColumnChart", nameof(medianRatingByFlavorProfile), nameof(countByFlavorProfile), medianRatingByFlavorProfile.ToArray(), countByFlavorProfile.ToArray());
+                            Script.Call("renderAsPieChart", nameof(countByFlavorProfile), countByFlavorProfile.ToArray());
                         };
                         reader.ReadAsText(input.Files[0]);
                     }
