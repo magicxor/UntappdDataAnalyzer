@@ -88,3 +88,42 @@ function renderRatingAndCountColumnChart(chartName1, chartName2, data1, data2) {
         }]
     });
 }
+
+function renderValueAndCountColumnChart(chartName1, chartName2, data1, data2) {
+    Highcharts.chart(chartName1, {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: chartName1 + " and " + chartName2
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: [{ // Primary yAxis
+            showLastLabel: false
+        }, { // Secondary yAxis
+            title: {
+                text: 'Count'
+            },
+            opposite: true,
+            visible: false
+        }],
+        plotOptions: {
+            column: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        series: [{
+                name: chartName1,
+                data: data1
+            },
+            {
+                name: chartName2,
+                data: data2,
+                yAxis: 1
+            }]
+    });
+}

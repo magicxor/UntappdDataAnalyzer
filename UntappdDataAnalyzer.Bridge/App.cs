@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using System;
+using Bridge.Html5;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,6 +90,7 @@ namespace UntappdDataAnalyzer.Bridge
             AddDivAsRow(divContainer, "countByServingType");
             AddDivAsRow(divContainer, "medianRatingByFlavorProfile");
             AddDivAsRow(divContainer, "countByFlavorProfile");
+            AddDivAsRow(divContainer, "medianAbvByDayOfWeek");
             divContainer.AppendChild(new HTMLHRElement());
             AddDivAsRow(divContainer, "additionalStats");
 
@@ -144,6 +146,7 @@ namespace UntappdDataAnalyzer.Bridge
                             var statsByStyle = dataAnalyzer.GetStatistics(data.Where(d => !string.IsNullOrEmpty(d.BeerType)), checkin => checkin.BeerType, checkin => checkin.RatingScore);
                             var statsByServingType = dataAnalyzer.GetStatistics(data.Where(d => !string.IsNullOrEmpty(d.ServingType)), checkin => checkin.ServingType, checkin => checkin.RatingScore);
                             var statsByFlavorProfile = dataAnalyzer.GetStatistics(dataByFlavorProfile, checkin => checkin.FlavorProfiles, checkin => checkin.RatingScore);
+                            var statsByDayOfWeek = dataAnalyzer.GetStatistics(data, checkin => checkin.CreatedAt.DayOfWeek, checkin => checkin.BeerAbv);
 
                             var medianRatingByCountry = statsByCountry.OrderByDescending(item => item.Median).Select(item => new { name = item.Key, y = item.Median }).ToList();
                             var countByCountry = statsByCountry.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
@@ -158,6 +161,9 @@ namespace UntappdDataAnalyzer.Bridge
 
                             var medianRatingByFlavorProfile = statsByFlavorProfile.OrderByDescending(item => item.Median).Select(item => new { name = item.Key, y = item.Median }).ToList();
                             var countByFlavorProfile = statsByFlavorProfile.OrderByDescending(item => item.Count).Select(item => new { name = item.Key, y = item.Count }).ToList();
+
+                            var medianAbvByDayOfWeek = statsByDayOfWeek.OrderBy(item => item.Key).Select(item => new { name = item.Key.ToString(), y = Math.Round(item.Median, 2) }).ToList();
+                            var countByDayOfWeek = statsByDayOfWeek.OrderBy(item => item.Key).Select(item => new { name = item.Key.ToString(), y = item.Count }).ToList();
 
                             Document.GetElementById("additionalStats").AppendChild(new HTMLParagraphElement()
                             {
@@ -174,6 +180,7 @@ namespace UntappdDataAnalyzer.Bridge
                             Script.Call("renderAsPieChart", nameof(countByServingType), countByServingType.ToArray());
                             Script.Call("renderRatingAndCountColumnChart", nameof(medianRatingByFlavorProfile), nameof(countByFlavorProfile), medianRatingByFlavorProfile.ToArray(), countByFlavorProfile.ToArray());
                             Script.Call("renderAsPieChart", nameof(countByFlavorProfile), countByFlavorProfile.ToArray());
+                            Script.Call("renderValueAndCountColumnChart", nameof(medianAbvByDayOfWeek), nameof(countByDayOfWeek), medianAbvByDayOfWeek.ToArray(), countByDayOfWeek.ToArray());
                         };
                         reader.ReadAsText(input.Files[0]);
                     }
